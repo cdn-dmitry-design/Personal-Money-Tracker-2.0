@@ -8,32 +8,41 @@
   <link rel="shortcut icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><text y='50%' x='50%' dominant-baseline='middle' text-anchor='middle' font-size='42'>₽</text></svg>">
   <style>
     :root{
-      --bg:#0b0f14;
-      --panel:#0f1621;
-      --card:#121a26;
-      --ink:#e8eef7;
-      --muted:#94a3b8;
-      --line:#1f2a3a;
-      --accent:#5aa0ff;
-      --accent-2:#7b61ff;
-      --ok:#2bd97c;
+      --bg:#f6f8fb;
+      --panel:#eef2f7;
+      --card:#ffffff;
+      --ink:#0f172a;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --accent:#3b82f6;
+      --accent-2:#6366f1;
+      --ok:#10b981;
       --radius:18px;
-      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --shadow:0 30px 70px rgba(15,23,42,.08);
       --fs-base:clamp(14px, 1.1vw, 16px);
       --fs-lg:clamp(16px, 1.6vw, 18px);
       --fs-xl:clamp(28px, 4vw, 44px);
       --fs-hero:clamp(34px, 6vw, 62px);
     }
+    @font-face{
+      font-family:"SF Pro Display";
+      font-style:normal;
+      font-weight:100 900;
+      src:local("SF Pro Display"), local("SFProDisplay-Regular");
+      font-display:swap;
+    }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
-      background:radial-gradient(1200px 600px at 70% -10%, rgba(90,160,255,.15), transparent),
-                 radial-gradient(900px 600px at 0% 10%, rgba(123,97,255,.12), transparent),
+      background:radial-gradient(1200px 600px at 70% -10%, rgba(59,130,246,.14), transparent),
+                 radial-gradient(900px 600px at 10% 10%, rgba(99,102,241,.12), transparent),
                  var(--bg);
       color:var(--ink);
       font:400 var(--fs-base)/1.5 "SF Pro Display", -apple-system, system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;
       letter-spacing:.2px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
     a{color:inherit; text-decoration:none}
     .wrap{max-width:1200px; margin:0 auto; padding:32px 20px 80px;}
@@ -41,28 +50,39 @@
       display:flex; align-items:center; justify-content:space-between; gap:16px;
       padding:10px 0 26px;
     }
+    .nav-inner{
+      width:100%;
+      background:rgba(255,255,255,.7);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 16px;
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+      box-shadow:0 12px 40px rgba(15,23,42,.08);
+      backdrop-filter:blur(10px);
+    }
     .logo{display:flex; align-items:center; gap:10px; font-weight:600; letter-spacing:.4px}
     .logo .dot{
       width:34px; height:34px; border-radius:12px;
       background:linear-gradient(135deg, var(--accent), var(--accent-2));
       display:inline-flex; align-items:center; justify-content:center;
       color:#fff; font-weight:700;
-      box-shadow:0 10px 30px rgba(90,160,255,.35);
+      box-shadow:0 12px 30px rgba(59,130,246,.35);
     }
     .nav-links{display:flex; gap:18px; color:var(--muted); font-size:var(--fs-base)}
     .nav-actions{display:flex; gap:10px}
     .btn{
       height:42px; padding:0 16px; border-radius:999px;
-      border:1px solid var(--line); background:rgba(255,255,255,.02);
+      border:1px solid var(--line); background:#fff;
       color:var(--ink); display:inline-flex; align-items:center; gap:8px;
-      transition:transform .2s ease, border-color .2s ease, background .2s ease;
+      transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
       font-weight:500;
     }
-    .btn:hover{border-color:#2a3a52; background:rgba(255,255,255,.04); transform:translateY(-1px)}
+    .btn:hover{border-color:#d4dbe6; background:#fff; box-shadow:0 10px 20px rgba(15,23,42,.08); transform:translateY(-1px)}
     .btn.primary{
       border-color:transparent;
       background:linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow:0 12px 30px rgba(90,160,255,.35);
+      color:#fff;
+      box-shadow:0 14px 30px rgba(59,130,246,.35);
     }
     .hero{
       display:grid; grid-template-columns:1.1fr .9fr; gap:32px; align-items:center;
@@ -73,22 +93,22 @@
     .hero .pill{
       display:inline-flex; align-items:center; gap:8px;
       padding:6px 12px; border-radius:999px; font-size:12px;
-      background:rgba(90,160,255,.12); color:#b9d3ff; border:1px solid rgba(90,160,255,.35);
+      background:rgba(59,130,246,.1); color:#2b5fd0; border:1px solid rgba(59,130,246,.25);
       margin-bottom:16px;
     }
     .hero-actions{display:flex; flex-wrap:wrap; gap:12px}
     .hero-card{
-      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.8));
       border:1px solid var(--line); border-radius:var(--radius);
       padding:20px; box-shadow:var(--shadow);
     }
     .hero-mock{
       border-radius:14px; padding:16px;
-      background:radial-gradient(600px 300px at 0% 0%, rgba(90,160,255,.2), transparent), var(--card);
-      border:1px solid #1d2736;
+      background:radial-gradient(600px 300px at 0% 0%, rgba(59,130,246,.16), transparent), var(--card);
+      border:1px solid var(--line);
     }
     .kpis{display:grid; grid-template-columns:repeat(2,1fr); gap:12px}
-    .kpi{padding:12px; border:1px solid var(--line); border-radius:12px; background:rgba(255,255,255,.02)}
+    .kpi{padding:12px; border:1px solid var(--line); border-radius:12px; background:#fff}
     .kpi b{font-size:20px}
     .section{padding:50px 0 20px}
     .section h2{margin:0 0 12px; font-size:var(--fs-xl)}
@@ -96,25 +116,55 @@
     .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
     .card{
       padding:18px; border-radius:16px; border:1px solid var(--line);
-      background:rgba(255,255,255,.02);
+      background:#fff;
+      box-shadow:0 10px 30px rgba(15,23,42,.04);
+      transition:transform .25s ease, box-shadow .25s ease;
     }
+    .card:hover{transform:translateY(-2px); box-shadow:0 18px 40px rgba(15,23,42,.08)}
     .card h3{margin:0 0 8px}
     .tag{
       display:inline-flex; align-items:center; gap:8px;
       padding:6px 10px; border-radius:999px; font-size:12px;
-      border:1px solid var(--line); color:#cbd5e1; background:rgba(255,255,255,.02);
+      border:1px solid var(--line); color:#475569; background:#f8fafc;
     }
     .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
     .step{
-      padding:16px; border-radius:14px; border:1px dashed #2a374a; background:rgba(255,255,255,.01);
+      padding:16px; border-radius:14px; border:1px dashed #d9e0ea; background:#fff;
+      transition:transform .25s ease, box-shadow .25s ease;
     }
+    .step:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(15,23,42,.06)}
     .cta{
       margin:40px 0 10px; padding:26px;
       border-radius:20px; border:1px solid var(--line);
-      background:linear-gradient(135deg, rgba(90,160,255,.15), rgba(123,97,255,.12));
+      background:linear-gradient(135deg, rgba(59,130,246,.12), rgba(99,102,241,.1));
       display:flex; align-items:center; justify-content:space-between; gap:16px;
     }
     footer{padding:40px 0 10px; color:var(--muted); font-size:12px}
+    .site-link{display:inline-flex; gap:6px; align-items:center; color:#2563eb; font-weight:500}
+    .site-link:hover{text-decoration:underline}
+    .announcement{
+      display:inline-flex; align-items:center; gap:10px;
+      border-radius:999px; padding:6px 12px; background:#fff;
+      border:1px solid var(--line); color:#475569; font-size:12px;
+      box-shadow:0 8px 20px rgba(15,23,42,.06);
+    }
+    .announcement .new{
+      padding:2px 8px; border-radius:999px; font-weight:600;
+      background:rgba(59,130,246,.12); color:#2563eb; border:1px solid rgba(59,130,246,.25);
+    }
+    .fade-up{opacity:0; transform:translateY(14px); animation:fadeUp .7s ease forwards}
+    .delay-1{animation-delay:.08s}
+    .delay-2{animation-delay:.16s}
+    .delay-3{animation-delay:.24s}
+    .delay-4{animation-delay:.32s}
+    .delay-5{animation-delay:.4s}
+    @keyframes fadeUp{
+      to{opacity:1; transform:translateY(0)}
+    }
+    @media (prefers-reduced-motion: reduce){
+      .fade-up{opacity:1; transform:none; animation:none}
+      .card,.step,.btn{transition:none}
+    }
     @media (max-width:960px){
       .hero{grid-template-columns:1fr; }
     }
@@ -128,33 +178,39 @@
 <body>
   <div class="wrap">
     <header class="nav">
-      <div class="logo">
-        <span class="dot">₽</span>
-        <span>Personal Money Tracker</span>
-      </div>
-      <nav class="nav-links">
-        <a href="#features">Возможности</a>
-        <a href="#flow">Процесс</a>
-        <a href="#security">Безопасность</a>
-        <a href="#cta">Начать</a>
-      </nav>
-      <div class="nav-actions">
-        <a class="btn" href="auth.html">Войти</a>
-        <a class="btn primary" href="index.html">Открыть трекер</a>
+      <div class="nav-inner">
+        <div class="logo">
+          <span class="dot">₽</span>
+          <span>Personal Money Tracker</span>
+        </div>
+        <nav class="nav-links">
+          <a href="#features">Возможности</a>
+          <a href="#flow">Процесс</a>
+          <a href="#security">Безопасность</a>
+          <a href="#cta">Начать</a>
+        </nav>
+        <div class="nav-actions">
+          <a class="btn" href="auth.html">Войти</a>
+          <a class="btn primary" href="index.html">Открыть трекер</a>
+        </div>
       </div>
     </header>
 
     <section class="hero">
       <div>
-        <div class="pill">Современный персональный фин‑контроль</div>
-        <h1>Держите доходы, расходы и долги под полным контролем</h1>
-        <p>Финансовый трекер с быстрым вводом операций, умной авто‑раскидкой дохода по счетам и наглядной статистикой по месяцам.</p>
-        <div class="hero-actions">
+        <div class="announcement fade-up delay-1">
+          <span class="new">NEW</span>
+          Экспорт CSV и облачная синхронизация включены
+        </div>
+        <div class="pill fade-up delay-2">Современный персональный фин‑контроль</div>
+        <h1 class="fade-up delay-3">Держите доходы, расходы и долги под полным контролем</h1>
+        <p class="fade-up delay-4">Финансовый трекер с быстрым вводом операций, умной авто‑раскидкой дохода по счетам и наглядной статистикой по месяцам.</p>
+        <div class="hero-actions fade-up delay-5">
           <a class="btn primary" href="auth.html">Создать учётку</a>
           <a class="btn" href="index.html">Перейти в трекер</a>
         </div>
       </div>
-      <div class="hero-card">
+      <div class="hero-card fade-up delay-3">
         <div class="hero-mock">
           <div class="tag">Дашборд</div>
           <h3 style="margin:10px 0 12px;">Итоги текущего месяца</h3>
@@ -166,15 +222,15 @@
           </div>
           <div class="card" style="margin-top:14px;">
             <div class="muted">Прогресс погашения долга</div>
-            <div style="margin-top:8px; height:10px; background:#0b111a; border-radius:999px; border:1px solid #1f2a3a; overflow:hidden;">
-              <i style="display:block; height:100%; width:58%; background:linear-gradient(90deg, var(--ok), #58f0a2);"></i>
+            <div style="margin-top:8px; height:10px; background:#f1f5f9; border-radius:999px; border:1px solid var(--line); overflow:hidden;">
+              <i style="display:block; height:100%; width:58%; background:linear-gradient(90deg, var(--ok), #6ee7b7);"></i>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="features" class="section">
+    <section id="features" class="section fade-up delay-1">
       <h2>Ключевые возможности</h2>
       <p class="muted">Структурируйте личные финансы без лишней рутины.</p>
       <div class="grid-3">
@@ -196,7 +252,7 @@
       </div>
     </section>
 
-    <section id="flow" class="section">
+    <section id="flow" class="section fade-up delay-2">
       <h2>Как это работает</h2>
       <p class="muted">Три шага от хаоса к ясности.</p>
       <div class="steps">
@@ -215,7 +271,7 @@
       </div>
     </section>
 
-    <section id="security" class="section">
+    <section id="security" class="section fade-up delay-3">
       <h2>Надёжность и приватность</h2>
       <p class="muted">Ваши данные хранятся в облаке и синхронизируются между устройствами.</p>
       <div class="grid-3">
@@ -234,7 +290,7 @@
       </div>
     </section>
 
-    <section id="cta" class="section">
+    <section id="cta" class="section fade-up delay-4">
       <div class="cta">
         <div>
           <h2 style="margin:0 0 6px">Готовы навести порядок в финансах?</h2>
@@ -249,6 +305,8 @@
 
     <footer>
       © Дмитрий. Персональный финансовый трекер.
+      <span style="margin-left:8px;">Сайт:</span>
+      <a class="site-link" href="https://dmitry-design.ru/" target="_blank" rel="noopener">dmitry-design.ru</a>
     </footer>
   </div>
 </body>
