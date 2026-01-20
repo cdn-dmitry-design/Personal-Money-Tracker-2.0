@@ -1261,6 +1261,8 @@ document.addEventListener("click", async (e) => {
     });
     let sumIncome = 0;
     let sumExpense = 0;
+    let monthIncome = 0;
+    let monthExpense = 0;
     const esc = (v='') => {
       const s = String(v ?? '');
       if(/[",\n]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
