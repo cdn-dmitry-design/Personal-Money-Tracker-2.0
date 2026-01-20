@@ -78,15 +78,33 @@ footer{margin-top:14px; text-align:center; color:#6b7280; font-size:var(--fs-sm)
 </div>
 
 <!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
+  if(!window.supabase){
+    document.write('<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"><\\/script>');
+  }
+</script>
+<script>
+(function(){
 /* ===== Константы проекта (та же пара, что и в auth.html) ===== */
 const SUPABASE_URL = "https://hxbrvnwukieluzlffgyr.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4YnJ2bnd1a2llbHV6bGZmZ3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0NTM1NDMsImV4cCI6MjA3NzAyOTU0M30.IWViKSutxlXo1R3DqArijjeseK6nQ9m55ZPe5EUToLQ";
-const INDEX_URL = "https://cdn-dmitry-design.github.io/Personal-Money-Tracker-2.0/index.html";
-const RESET_URL = "https://cdn-dmitry-design.github.io/Personal-Money-Tracker-2.0/reset.html"; // сама эта страница
+const BASE_URL = "https://cdn-dmitry-design.github.io/Personal-Money-Tracker-2.0/";
+const INDEX_URL = BASE_URL + "index.html";
+const RESET_URL = BASE_URL + "reset.html"; // сама эта страница
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+if(!window.supabase || !window.supabase.createClient){
+  const msg = document.getElementById('msg');
+  if(msg){
+    msg.className = "alert err";
+    msg.textContent = "Не удалось загрузить Supabase SDK. Проверьте блокировки/расширения.";
+    msg.classList.remove("hidden");
+  }
+  const ask = document.getElementById('frmAsk');
+  if(ask) ask.classList.remove('hidden');
+  throw new Error('Supabase SDK not loaded');
+}
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 /* ===== Утилиты UI ===== */
 const $ = (s,r=document)=>r.querySelector(s);
@@ -95,11 +113,31 @@ const show = (type,text)=>{ msg.className="alert "+(type||""); msg.textContent=t
 const hide = ()=> msg.classList.add("hidden");
 
 /* ===== ЛОГИКА СТРАНИЦЫ ===== */
+async function ensureRecoverySession(){
+  const params = new URLSearchParams(location.search);
+  const code = params.get("code");
+  const type = params.get("type");
+  if(code && type === "recovery"){
+    const { error } = await sb.auth.exchangeCodeForSession(code);
+    if(error) throw error;
+    return;
+  }
+  if(location.hash && location.hash.includes("access_token=")){
+    const hash = new URLSearchParams(location.hash.slice(1));
+    const access_token = hash.get("access_token");
+    const refresh_token = hash.get("refresh_token");
+    if(access_token && refresh_token){
+      const { error } = await sb.auth.setSession({ access_token, refresh_token });
+      if(error) throw error;
+    }
+  }
+}
+
 (async function init(){
-  // Если пришли по ссылке из письма — в хэше будет access_token&type=recovery
-  // Supabase v2 создаёт временную сессию автоматически
+  // Если пришли по ссылке из письма — используем code или access_token
   try{
-    const { data:{ session } } = await supabase.auth.getSession();
+    await ensureRecoverySession();
+    const { data:{ session } } = await sb.auth.getSession();
 
     if(session && session.user){
       // Режим установки нового пароля
@@ -110,6 +148,7 @@ const hide = ()=> msg.classList.add("hidden");
       $("#frmAsk").classList.remove("hidden");
     }
   }catch(e){
+    show("err","Ссылка недействительна или устарела. Отправьте письмо ещё раз.");
     $("#frmAsk").classList.remove("hidden");
   }
 })();
@@ -123,7 +162,7 @@ $("#frmSet").addEventListener("submit", async (e)=>{
   if(p1!==p2)     return show("", "Пароли не совпадают. Проверьте ввод.");
 
   try{
-    const { error } = await supabase.auth.updateUser({ password: p1 });
+    const { error } = await sb.auth.updateUser({ password: p1 });
     if(error) throw error;
     show("ok","Пароль обновлён. Входим…");
     setTimeout(()=> location.href = INDEX_URL, 700);
@@ -138,13 +177,14 @@ $("#frmAsk").addEventListener("submit", async (e)=>{
   const email = $("#ask-email").value.trim();
   if(!email) return show("", "Укажите email.");
   try{
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: RESET_URL });
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: RESET_URL });
     if(error) throw error;
     show("ok","Ссылка на сброс отправлена на " + email + ". Проверьте почту.");
   }catch(err){
     show("err","Ошибка отправки письма: " + err.message);
   }
 });
+})();
 </script>
 </body>
 
