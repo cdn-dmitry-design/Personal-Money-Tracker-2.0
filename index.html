@@ -1254,8 +1254,11 @@ document.addEventListener("click", async (e) => {
 
   $('#btnExportCsv').onclick = () => {
     const header = ['Дата','Тип','Счета','Сумма','Категория','Заметка'];
-    const lines = [header.join(',')];
-    const list = state.transactions.slice().sort((a,b)=> (a._order||0)-(b._order||0));
+    const lines = [];
+    const list = state.transactions.slice().sort((a,b)=> {
+      if((a.date||'') !== (b.date||'')) return (a.date||'').localeCompare(b.date||'');
+      return (a._order||0) - (b._order||0);
+    });
     let sumIncome = 0;
     let sumExpense = 0;
     const esc = (v='') => {
@@ -1263,7 +1266,20 @@ document.addEventListener("click", async (e) => {
       if(/[",\n]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
       return s;
     };
+    const monthLabel = (ym) => {
+      const [y,m] = ym.split('-').map(Number);
+      if(!y || !m) return ym;
+      return new Date(y, m-1, 1).toLocaleString('ru-RU',{month:'long',year:'numeric'});
+    };
+    let currentMonth = null;
     list.forEach(t=>{
+      const ym = (t.date||'').slice(0,7);
+      if(ym && ym !== currentMonth){
+        currentMonth = ym;
+        if(lines.length) lines.push('');
+        lines.push(esc(`Месяц: ${monthLabel(ym)}`));
+        lines.push(header.join(','));
+      }
       const accounts = (
         t.type==='transfer' ? `${labelAcc(t.fromAccount)} → ${labelAcc(t.toAccount)}` :
         t.type==='income'   ? `${labelAcc(t.account)} (+)` :
@@ -1274,7 +1290,7 @@ document.addEventListener("click", async (e) => {
       if(t.type === 'expense' || t.type === 'debt') sumExpense += Number(t.amount)||0;
       lines.push([
         esc(t.date||''),
-        esc(t.type||''),
+        esc(labelType(t.type)),
         esc(accounts||''),
         esc(t.amount ?? ''),
         esc(t.category||''),
