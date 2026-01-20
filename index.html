@@ -905,8 +905,6 @@ document.addEventListener("click", async (e) => {
     const tbody = $('#txTable tbody'); tbody.innerHTML = '';
     let sumIncome = 0;
     let sumExpense = 0;
-    let monthIncome = 0;
-    let monthExpense = 0;
     for(const t of list){
       const accounts = (
         t.type==='transfer' ? `${labelAcc(t.fromAccount)} → ${labelAcc(t.toAccount)}` :
