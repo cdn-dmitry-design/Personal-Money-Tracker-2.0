@@ -905,6 +905,8 @@ document.addEventListener("click", async (e) => {
     const tbody = $('#txTable tbody'); tbody.innerHTML = '';
     let sumIncome = 0;
     let sumExpense = 0;
+    let monthIncome = 0;
+    let monthExpense = 0;
     for(const t of list){
       const accounts = (
         t.type==='transfer' ? `${labelAcc(t.fromAccount)} → ${labelAcc(t.toAccount)}` :
@@ -1272,11 +1274,20 @@ document.addEventListener("click", async (e) => {
       return new Date(y, m-1, 1).toLocaleString('ru-RU',{month:'long',year:'numeric'});
     };
     let currentMonth = null;
+    const pushMonthTotals = () => {
+      lines.push(['Итого доход','','',monthIncome,'',''].join(','));
+      lines.push(['Итого расход','','',monthExpense,'',''].join(','));
+      monthIncome = 0;
+      monthExpense = 0;
+    };
     list.forEach(t=>{
       const ym = (t.date||'').slice(0,7);
       if(ym && ym !== currentMonth){
+        if(currentMonth){
+          pushMonthTotals();
+          lines.push('');
+        }
         currentMonth = ym;
-        if(lines.length) lines.push('');
         lines.push(esc(`Месяц: ${monthLabel(ym)}`));
         lines.push(header.join(','));
       }
@@ -1286,8 +1297,8 @@ document.addEventListener("click", async (e) => {
         t.type==='expense'  ? `${labelAcc(t.account)} (−)` :
         t.type==='debt'     ? `Долг${t.account? ' (− '+labelAcc(t.account)+')':''}` : ''
       );
-      if(t.type === 'income') sumIncome += Number(t.amount)||0;
-      if(t.type === 'expense' || t.type === 'debt') sumExpense += Number(t.amount)||0;
+      if(t.type === 'income') { sumIncome += Number(t.amount)||0; monthIncome += Number(t.amount)||0; }
+      if(t.type === 'expense' || t.type === 'debt') { sumExpense += Number(t.amount)||0; monthExpense += Number(t.amount)||0; }
       lines.push([
         esc(t.date||''),
         esc(labelType(t.type)),
@@ -1297,9 +1308,12 @@ document.addEventListener("click", async (e) => {
         esc(t.note||'')
       ].join(','));
     });
+    if(currentMonth){
+      pushMonthTotals();
+    }
     lines.push('');
-    lines.push(['Итого доход','','',sumIncome,'',''].join(','));
-    lines.push(['Итого расход','','',sumExpense,'',''].join(','));
+    lines.push(['Итого доход (все месяцы)','','',sumIncome,'',''].join(','));
+    lines.push(['Итого расход (все месяцы)','','',sumExpense,'',''].join(','));
     const csv = '\ufeff' + lines.join('\n');
     const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
     const emailRaw = ($('#userEmail')?.textContent || '').trim();
