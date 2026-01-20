@@ -23,6 +23,7 @@
       --fs-lg:clamp(16px, 1.6vw, 18px);
       --fs-xl:clamp(28px, 4vw, 44px);
       --fs-hero:clamp(34px, 6vw, 62px);
+      --section-gap:64px;
     }
     @font-face{
       font-family:"SF Pro Display";
@@ -33,6 +34,7 @@
     }
     *{box-sizing:border-box}
     html,body{height:100%}
+    html{scroll-behavior:smooth}
     body{
       margin:0;
       background:radial-gradient(1200px 600px at 70% -10%, rgba(59,130,246,.14), transparent),
@@ -86,7 +88,7 @@
     }
     .hero{
       display:grid; grid-template-columns:1.1fr .9fr; gap:32px; align-items:center;
-      padding:40px 0 60px;
+      padding:40px 0 var(--section-gap);
     }
     .hero h1{font-size:var(--fs-hero); line-height:1.08; margin:0 0 16px}
     .hero p{color:var(--muted); font-size:var(--fs-lg); margin:0 0 22px}
@@ -110,7 +112,7 @@
     .kpis{display:grid; grid-template-columns:repeat(2,1fr); gap:12px}
     .kpi{padding:12px; border:1px solid var(--line); border-radius:12px; background:#fff}
     .kpi b{font-size:20px}
-    .section{padding:50px 0 20px}
+    .section{padding:var(--section-gap) 0}
     .section h2{margin:0 0 12px; font-size:var(--fs-xl)}
     .muted{color:var(--muted)}
     .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
@@ -127,6 +129,11 @@
       padding:6px 10px; border-radius:999px; font-size:12px;
       border:1px solid var(--line); color:#475569; background:#f8fafc;
     }
+    .icon{
+      width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center;
+      border-radius:8px; background:#eef4ff; color:#2563eb;
+    }
+    .icon svg{width:16px; height:16px; display:block}
     .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
     .step{
       padding:16px; border-radius:14px; border:1px dashed #d9e0ea; background:#fff;
@@ -186,7 +193,8 @@
         <nav class="nav-links">
           <a href="#features">Возможности</a>
           <a href="#flow">Процесс</a>
-          <a href="#security">Безопасность</a>
+          <a href="#insights">Инсайты</a>
+          <a href="#pricing">Тарифы</a>
           <a href="#cta">Начать</a>
         </nav>
         <div class="nav-actions">
@@ -202,10 +210,9 @@
           <span class="new">NEW</span>
           Экспорт CSV и облачная синхронизация включены
         </div>
-        <div class="pill fade-up delay-2">Современный персональный фин‑контроль</div>
-        <h1 class="fade-up delay-3">Держите доходы, расходы и долги под полным контролем</h1>
-        <p class="fade-up delay-4">Финансовый трекер с быстрым вводом операций, умной авто‑раскидкой дохода по счетам и наглядной статистикой по месяцам.</p>
-        <div class="hero-actions fade-up delay-5">
+        <h1 class="fade-up delay-2">Держите доходы, расходы и долги под полным контролем</h1>
+        <p class="fade-up delay-3">Финансовый трекер с быстрым вводом операций, умной авто‑раскидкой дохода по счетам и наглядной статистикой по месяцам.</p>
+        <div class="hero-actions fade-up delay-4">
           <a class="btn primary" href="auth.html">Создать учётку</a>
           <a class="btn" href="index.html">Перейти в трекер</a>
         </div>
@@ -235,17 +242,26 @@
       <p class="muted">Структурируйте личные финансы без лишней рутины.</p>
       <div class="grid-3">
         <div class="card">
-          <div class="tag">Авто‑раскидка</div>
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/>
+            </svg></span>Авто‑раскидка</div>
           <h3>Доходы по счетам</h3>
           <p class="muted">Укажите проценты распределения — трекер сам разложит доход по счетам.</p>
         </div>
         <div class="card">
-          <div class="tag">Транзакции</div>
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 7h16M4 12h10M4 17h7"/>
+            </svg></span>Транзакции</div>
           <h3>Быстрый ввод</h3>
           <p class="muted">Добавляйте доходы, расходы, переводы и платежи по долгу за секунды.</p>
         </div>
         <div class="card">
-          <div class="tag">Статистика</div>
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19V6M10 19V10M16 19V4M22 19H2"/>
+            </svg></span>Статистика</div>
           <h3>Итоги по месяцам</h3>
           <p class="muted">Смотрите суммы по доходам и расходам, фильтруйте историю и выгружайте CSV.</p>
         </div>
@@ -257,14 +273,26 @@
       <p class="muted">Три шага от хаоса к ясности.</p>
       <div class="steps">
         <div class="step">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/>
+            </svg></span>Шаг 1</div>
           <h3>1. Настройте счета</h3>
           <p class="muted">Задайте баланс и проценты авто‑раскидки для доходов.</p>
         </div>
         <div class="step">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12h14"/>
+            </svg></span>Шаг 2</div>
           <h3>2. Вносите операции</h3>
           <p class="muted">Записывайте доходы, расходы, переводы и долги.</p>
         </div>
         <div class="step">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 17l6-6 4 4 7-7"/><path d="M21 7v6h-6"/>
+            </svg></span>Шаг 3</div>
           <h3>3. Следите за динамикой</h3>
           <p class="muted">Сравнивайте месяцы и экспортируйте отчёты в CSV.</p>
         </div>
@@ -276,16 +304,90 @@
       <p class="muted">Ваши данные хранятся в облаке и синхронизируются между устройствами.</p>
       <div class="grid-3">
         <div class="card">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 3l7 4v5c0 5-3.5 8-7 9-3.5-1-7-4-7-9V7l7-4z"/>
+            </svg></span>Защита</div>
           <h3>Облачная синхронизация</h3>
           <p class="muted">Вход по аккаунту — данные не потеряются при смене устройства.</p>
         </div>
         <div class="card">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v9h-9"/>
+            </svg></span>Скорость</div>
           <h3>Локальное кэширование</h3>
           <p class="muted">Интерфейс остаётся быстрым, даже при нестабильном интернете.</p>
         </div>
         <div class="card">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M4 21h16"/>
+            </svg></span>Экспорт</div>
           <h3>Экспорт данных</h3>
           <p class="muted">Выгружайте историю операций одним кликом.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="insights" class="section fade-up delay-2">
+      <h2>Инсайты и контроль</h2>
+      <p class="muted">Сфокусируйтесь на важном, а рутину делегируйте трекеру.</p>
+      <div class="grid-3">
+        <div class="card">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+            </svg></span>Контроль дня</div>
+          <h3>Лимиты и темп трат</h3>
+          <p class="muted">Следите за темпом расходов и корректируйте планы вовремя.</p>
+        </div>
+        <div class="card">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 20h16M6 16l4-5 3 3 5-7"/>
+            </svg></span>Динамика</div>
+          <h3>Сравнение месяцев</h3>
+          <p class="muted">Сравнивайте периоды, чтобы видеть тренды и сезонность.</p>
+        </div>
+        <div class="card">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 7h16M4 12h10M4 17h7"/>
+            </svg></span>Фильтры</div>
+          <h3>Быстрый поиск</h3>
+          <p class="muted">Ищите нужные операции по типу, счёту и заметкам.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="section fade-up delay-3">
+      <h2>Тарифы</h2>
+      <p class="muted">Простой выбор без скрытых условий.</p>
+      <div class="grid-3">
+        <div class="card">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M5 7h14M5 17h14"/>
+            </svg></span>Базовый</div>
+          <h3>0 ₽ / мес</h3>
+          <p class="muted">Все ключевые функции, облако и экспорт CSV.</p>
+        </div>
+        <div class="card">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2l3 7h7l-5.5 4.2L18 21l-6-4-6 4 1.5-7.8L2 9h7z"/>
+            </svg></span>Плюс</div>
+          <h3>299 ₽ / мес</h3>
+          <p class="muted">Доп. виджеты, расширенные отчёты и приоритетные обновления.</p>
+        </div>
+        <div class="card">
+          <div class="tag"><span class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 1l3 5 5 1-3.5 4.2.8 5.8-5.3-2.7-5.3 2.7.8-5.8L4 7l5-1z"/>
+            </svg></span>Премиум</div>
+          <h3>799 ₽ / мес</h3>
+          <p class="muted">Персональные цели, сценарии, приоритетная поддержка.</p>
         </div>
       </div>
     </section>
