@@ -154,7 +154,10 @@ document.addEventListener('keydown', e => {
 /* ===== Supabase ===== */
 const SUPABASE_URL = "https://hxbrvnwukieluzlffgyr.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4YnJ2bnd1a2llbHV6bGZmZ3lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0NTM1NDMsImV4cCI6MjA3NzAyOTU0M30.IWViKSutxlXo1R3DqArijjeseK6nQ9m55ZPe5EUToLQ";
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ⚠️ ВАЖНО: SDK создаёт window.supabase. Клиент называем supabaseClient, чтобы не было конфликта. */
+window.__supabaseClient = window.__supabaseClient || window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = window.__supabaseClient;
 
 /* === НОВЫЕ URL на GitHub Pages под username: cdn-dmitry-design === */
 const AUTH_URL  = "https://cdn-dmitry-design.github.io/Personal-Money-Tracker-2.0/auth.html";
@@ -218,7 +221,7 @@ async function storeBrowserCredentials(email, pass){
 
 /* ===== Если уже авторизован — сразу в трекер ===== */
 (async () => {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if(session && session.user){
     localStorage.setItem("dm_user_id", session.user.id);
     location.href = INDEX_URL;
@@ -245,11 +248,11 @@ frmSignup.addEventListener("submit", async (e) => {
 
     isSubmittingSignup = true; btn.disabled = true;
 
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabaseClient.auth.signUp({ email, password });
     if (error) throw error;
 
     const { data: loginData, error: loginError } =
-      await supabase.auth.signInWithPassword({ email, password });
+      await supabaseClient.auth.signInWithPassword({ email, password });
     if (loginError) throw loginError;
 
     const user = loginData.user;
@@ -271,7 +274,7 @@ frmLogin.addEventListener("submit", async (e) => {
   const email = $("#login-email").value.trim();
   const password = $("#login-pass").value.trim();
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if(error) throw error;
     const user = data.user;
     localStorage.setItem("dm_user_id", user.id);
@@ -290,7 +293,7 @@ $("#btnReset").onclick = async () => {
   try {
     /* локальная константа — тоже указывает на новый reset.html */
     const RESET_URL = "https://cdn-dmitry-design.github.io/Personal-Money-Tracker-2.0/reset.html";
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: RESET_URL });
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: RESET_URL });
     if (error) throw error;
 
     show("ok", "Ссылка на форму сброса пароля отправлена на " + email);
@@ -303,7 +306,7 @@ $("#btnReset").onclick = async () => {
 async function handleRecovery(){
   if(location.hash !== "#recovery") return;
   hideMsg();
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if(!(session && session.user)){
     show("err","Ссылка на сброс пароля устарела или недействительна.");
     return;
@@ -324,7 +327,7 @@ frmRec.addEventListener("submit", async (e)=>{
   if(p1.length < 6) return show("", "Пароль должен быть не короче 6 символов.");
   if(p1 !== p2)    return show("", "Пароли не совпадают. Проверьте ввод.");
   try{
-    const { error } = await supabase.auth.updateUser({ password: p1 });
+    const { error } = await supabaseClient.auth.updateUser({ password: p1 });
     if(error) throw error;
     show("ok","Пароль обновлён. Входим…");
     setTimeout(()=> location.href = INDEX_URL, 600);
@@ -343,21 +346,21 @@ frmRec.addEventListener("submit", async (e)=>{
 /* ===== Создание/обновление строки пользователя в БД ===== */
 async function ensureUserRow(userId, email){
   try{
-    const { data: rows, error: selErr } = await supabase
+    const { data: rows, error: selErr } = await supabaseClient
       .from("users_fintracker").select("id").eq("user_id", userId).limit(1);
     if(selErr) throw selErr;
     if(!rows || rows.length===0){
-      const { error: insErr } = await supabase
+      const { error: insErr } = await supabaseClient
         .from("users_fintracker").insert({ user_id: userId, email: email||null, data: {} });
       if(insErr) throw insErr;
     } else {
-      await supabase.from("users_fintracker").update({ email: email||null }).eq("user_id", userId);
+      await supabaseClient.from("users_fintracker").update({ email: email||null }).eq("user_id", userId);
     }
   }catch(err){ console.warn("ensureUserRow:", err.message); }
 }
 
 /* ===== Запомним user_id при любых изменениях ===== */
-supabase.auth.onAuthStateChange((_event, session) => {
+supabaseClient.auth.onAuthStateChange((_event, session) => {
   if(session && session.user) localStorage.setItem("dm_user_id", session.user.id);
 });
 </script>
